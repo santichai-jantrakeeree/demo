@@ -1,0 +1,19 @@
+﻿@model Microsoft.AspNetCore.Http.IFormFile
+@{
+    var controlId = Html.IdFor(model => model);
+    var imageId = $"{controlId}_img";
+    var htmlAttributes = HtmlHelper.AnonymousObjectToHtmlAttributes(ViewData["htmlAttributes"]);
+    htmlAttributes["type"] = "file";
+    htmlAttributes["class"] = "custom-file-input";
+    htmlAttributes["onchange"] = $"store.ui.image.change(this, '#{imageId}')";
+
+    var pictureUrl = ViewData["pictureUrl"]?.ToString();
+    var name = ViewData["name"]?.ToString();
+}
+<div class="input-group">
+    <div class="custom-file">
+        @Html.TextBoxFor(model => model, htmlAttributes)
+        <label class="custom-file-label" for="@controlId">Choose file</label>
+    </div>
+</div>
+<img id="@imageId" src="@Url.Content(pictureUrl)" alt="@name" class="img-thumbnail mt-3">

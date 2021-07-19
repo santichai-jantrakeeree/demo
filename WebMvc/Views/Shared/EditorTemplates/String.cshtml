@@ -1,0 +1,5 @@
+﻿@model System.String
+
+@Html.LabelFor(model => model)
+@Html.TextBoxFor(model => model, String.Empty, new { @class = "form-control" })
+@Html.ValidationMessageFor(model => model, String.Empty, new { @class = "text-danger" })

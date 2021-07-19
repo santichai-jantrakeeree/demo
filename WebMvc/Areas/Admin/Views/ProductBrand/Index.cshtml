@@ -1,0 +1,39 @@
+﻿@{
+    ViewData["menuName"] = "Product Brand";
+}
+<button type="button" class="btn btn-primary mb-2" onclick="openEditorCreateMode()">New Item</button>
+<table id="table" class="table table-striped table-bordered" style="width: 100%;">
+</table>
+<div id="viewModal" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
+</div>
+@section scripts {
+    <script type="text/javascript">
+        function openEditorCreateMode() {
+            let url = '@Url.Action("details", "productbrand", new { area = "admin" })/';
+            let actionUrl = '@Url.Action("create", "productbrand", new { area = "admin" })/';
+            store.ui.popup.openEditor({ url: url, actionUrl: actionUrl, mode: 'create'});
+        }
+
+        $(document).ready(function () {
+            $('#nvProductBrand').addClass('active');
+
+            let url_list = '@Url.Action("list", "productbrand", new { area = "admin" })/';
+            let url_delete = '@Url.Action("delete", "productbrand", new { area = "admin" })/';
+            let url_edit = '@Url.Action("edit", "productbrand", new { area = "admin" })/';
+            let url_details = '@Url.Action("details", "productbrand", new { area = "admin" })/';
+            store.ui.dataTable.make({
+                selector: '#table',
+                url_list: url_list,
+                url_delete: url_delete,
+                url_edit: url_edit,
+                url_details: url_details,
+                columns: [
+                    { data: 'id', title: 'Id', width: '100px' },
+                    { data: 'name', title: 'Name', width: '300px' }
+                ]
+            });
+
+            store.ui.popup.makeEditor({ selector: '#viewModal', partialViewId: 'partialView' });
+        });
+    </script>
+}

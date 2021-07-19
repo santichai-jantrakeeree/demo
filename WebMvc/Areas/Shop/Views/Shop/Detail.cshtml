@@ -1,0 +1,74 @@
+﻿@model Core.Dtos.ProductDto
+@using Newtonsoft.Json;
+@{
+    var item = new
+    {
+        id = Model.Id,
+        name = Model.Name,
+        price = Model.Price,
+        type = Model.ProductType,
+        url = string.IsNullOrEmpty(Model.PictureUrl)
+            ? string.Empty :
+            Model.PictureUrl.Substring(1, Model.PictureUrl.Length - 1),
+        quantity = 1
+    };
+}
+<div class="container mt-5">
+    <div class="row" *ngIf="product">
+        <div class="col-6">
+            <img src='@Url.Content(Model.PictureUrl)' alt="@Model.Name" class="img-fluid w-100">
+        </div>
+        <div class="col-6">
+            <h3>@Model.Name</h3>
+            <p style="font-size: 2em;">@Model.Price.ToString("C")</p>
+            <div class="d-flex justify-content-start align-items-center">
+                <i onclick="decrementQuantity()" class="fa fa-minus-circle text-warning mr-2" style="cursor: pointer; font-size: 2em;"></i>
+                <span id="spQuantity" data-val="1" class="font-weight-bold" style="font-size: 1.5em;">1</span>
+                <i onclick="incrementQuantity()" class="fa fa-plus-circle text-warning mx-2" style="cursor: pointer; font-size: 2em;"></i>
+                <button onclick="addItemToBasket()" class="btn btn-outline-primary btn-lg ml-4">Add to Cart</button>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-12 ml-3">
+                <h4>Description</h4>
+                <p>@Model.Description</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+        function getDefaultItem() {
+            return @Html.Raw(JsonConvert.SerializeObject(item));
+        }
+
+        function decrementQuantity() {
+            updateQuantity(-1);
+        }
+
+        function incrementQuantity() {
+            updateQuantity(1);
+        }
+
+        function updateQuantity(num) {
+            let $spQuantity = $('#spQuantity');
+            let oldQuantity = $spQuantity.data('val');
+            let newQuantity = num + oldQuantity;
+
+            if (newQuantity < 1) return;
+
+            $spQuantity.data('val', newQuantity);
+            $spQuantity.text(newQuantity);
+        }
+
+        function addItemToBasket() {
+            let $spQuantity = $('#spQuantity');
+
+            let item = getDefaultItem();
+            item['quantity'] = $spQuantity.data('val');
+
+            store.ui.basket.addItem(item);
+        }
+    </script>
+}

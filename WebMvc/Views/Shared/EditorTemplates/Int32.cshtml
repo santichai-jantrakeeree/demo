@@ -1,0 +1,5 @@
+﻿@model System.Int32
+
+@Html.LabelFor(model => model)
+@Html.TextBoxFor(model => model, String.Empty, new { @class = "form-control", style = "text-align:right" })
+@Html.ValidationMessageFor(model => model, String.Empty, new { @class = "text-danger" })

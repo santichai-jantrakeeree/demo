@@ -1,0 +1,193 @@
+﻿<div class="container mt-2">
+    <div id="noItem" style="display:none">
+        <p>There are no items in your basket</p>
+    </div>
+    <div id="divShowItems" style="display:none">
+        <div class="pb-5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12 py-5 mb-1">
+                        <div class="table-responsive">
+                            <table id="tableItems" class="table table-borderless">
+                                <thead class="border-0 py-2">
+                                    <tr>
+                                        <th scope="col">
+                                            <div class="p-2 px-3 text-uppercase">Product</div>
+                                        </th>
+                                        <th scope="col">
+                                            <div class="py-2 text-uppercase">Price</div>
+                                        </th>
+                                        <th scope="col">
+                                            <div class="py-2 text-uppercase">Quantity</div>
+                                        </th>
+                                        <th scope="col">
+                                            <div class="py-2 text-uppercase">Total</div>
+                                        </th>
+                                        <th scope="col" class="border-0">
+                                            <div class="py-2 text-uppercase">Remove</div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">                    
+                    <div class="col-6 offset-6">
+                        <div class="bg-light px-4 text-uppercase font-weight-bold" style="padding: 1.20em;">
+                            Order Summary
+                        </div>
+                        <div class="p-4">
+                            <p class="font-italic mb-4">Shipping costs will be added depending on choices made during checkout</p>
+                            <ul id="summaryTable" data-value="0" class="list-unstyled mb-4">
+                                <li class="d-flex justify-content-between py-3 border-bottom">
+                                    <strong class="text-muted">Order subtotal</strong>
+                                    <strong id="subtotal">0</strong>
+                                </li>
+                                <li class="d-flex justify-content-between py-3 border-bottom">
+                                    <strong class="text-muted">Shipping and handling</strong>
+                                    <strong>0</strong>
+                                </li>
+                                <li class="d-flex justify-content-between py-3 border-bottom">
+                                    <strong class="text-muted">Total</strong>
+                                    <strong id="grandTotal">0</strong>
+                                </li>
+                            </ul>
+                        </div>
+                        <a href='@Url.Action("checkout", "shop", new { area = "shop"})' class="btn btn-outline-primary py-2 btn-block">
+                            Proceed to checkout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+        function initialUI() {
+            let items = store.ui.basket.get();
+            if (Object.keys(items).length == 0) {
+                $('#noItem').show();
+            } else {
+                $('#divShowItems').show();
+
+                initialTableItems(items);
+            }
+        }
+
+        function initialTableItems(items) {
+            let $table = $('#tableItems');
+            let summaryTotal = 0;
+            for (let key in items) {
+                let item = items[key];
+                let $row = $('<tr></tr>')
+                let totalPrice = item.price * item.quantity;
+                $row.data('total-price', totalPrice);
+
+                summaryTotal += totalPrice;
+
+                let td =
+                    '<td>' +
+                    '	<div class="p-2">' +
+                    '		<img src="' + item.url + '" alt="' + item.name + '"' +
+                    '			class="img-fluid" style="max-height: 50px;">' +
+                    '		<div class="ml-3 d-inline-block align-middle">' +
+                    '			<h5 class="mb-0">' +
+                    '				<a href="/shop/shop/detail/' + item.id + '"' +
+                    '					class="text-dark">' + item.name + '</a>' +
+                    '			</h5>' +
+                    '			<span class="text-muted font-weight-normal font-italic d-block">Type:' +
+                    '				' + item.type + '</span>' +
+                    '		</div>' +
+                    '	</div>' +
+                    '</td>'
+                $row.append(td);
+
+                let tdPrice = '<td class="align-middle text-right"><strong>' + store.ui.utils.formatCurrency(item.price) + '</strong></td>';
+                $row.append(tdPrice);
+
+                let tdQuantity =
+                    '<td class="align-middle text-right">' +
+                    '	<div class="d-flex align-items-center justify-content-center">' +
+                    '		<i onclick="decrementItemQuantity(' + item.id + ', ' + item.price + ', this)" class="fa fa-minus-circle text-warning mr-2"' +
+                    '			style="cursor: pointer; font-size: 2em;"></i>' +
+                    '		<span class="font-weight-bold item-qty-text" style="font-size: 1.5em;">' + item.quantity + '</span>' +
+                    '		<i onclick="incrementItemQuantity(' + item.id + ', ' + item.price + ', this)" class="fa fa-plus-circle text-warning mx-2"' +
+                    '			style="cursor: pointer; font-size: 2em;"></i>' +
+                    '	</div>' +
+                    '</td>'
+                $row.append(tdQuantity);
+
+                let tdTotal =
+                    '<td class="align-middle text-right">' +
+                    '	<strong class="item-total-text">' + store.ui.utils.formatCurrency(totalPrice) + '</strong>' +
+                    '</td>'
+                $row.append(tdTotal);
+
+                let tdRemove =
+                    '<td class="align-middle text-center">' +
+                    '	<a class="text-danger">' +
+                    '		<i onclick="removeItem(' + item.id + ', this)" class="fa fa-trash" style="font-size: 2em; cursor: pointer;"></i>' +
+                    '	</a>' +
+                    '</td>'
+                $row.append(tdRemove);
+                $table.append($row);
+            }
+
+            updateSummaryTable(summaryTotal);
+        }
+
+        function updateItemQuantity(productId, price, el, quantity) {
+            let item = { id: productId, quantity: quantity };
+            let newQuantity = store.ui.basket.addItem(item);
+            let $tr = $(el).closest('tr');
+
+            if (newQuantity == 0) {
+                store.ui.basket.deleteItem(productId);
+                $tr.remove();
+            }
+            else {                
+                //set new quantity
+                $tr.find(".item-qty-text").text(newQuantity);
+                //set new total price
+                let totalPrice = newQuantity * price;
+                $tr.data('total-price', totalPrice);
+                $tr.find(".item-total-text").text(store.ui.utils.formatCurrency(totalPrice));                
+            }
+            updateSummaryTable(price * quantity);
+        }
+
+        function decrementItemQuantity(productId, price, el) {
+            updateItemQuantity(productId, price, el, -1);
+        }
+
+        function incrementItemQuantity(productId, price, el) {
+            updateItemQuantity(productId, price, el, 1);
+        }
+
+        function removeItem(productId, el) {
+            store.ui.basket.deleteItem(productId);
+            let $tr = $(el).closest('tr');
+            let totalPrice = $tr.data('total-price');
+            updateSummaryTable(-totalPrice);
+            $tr.remove();
+        }
+
+        function updateSummaryTable(price) {
+            let $summaryTable = $('#summaryTable');
+            let currentValue = $summaryTable.data('value');
+            let newValue = currentValue + price;
+
+            $summaryTable.data('value', newValue);
+            $('#subtotal, #grandTotal').text(store.ui.utils.formatCurrency(newValue));
+        }
+
+        $(document).ready(function () {
+            initialUI();
+        });
+    </script>
+}

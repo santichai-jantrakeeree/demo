@@ -1,0 +1,343 @@
+﻿@model WebMvc.Models.PageModel.CheckoutPageModel
+
+@section Styles{
+    <style>
+        .nav-tabs .nav-link:hover {
+            border: 1px solid transparent;
+        }
+    </style>
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <ul class="nav nav-tabs nav-pills nav-justified" id="tabNav" role="tablist">
+                <li class="nav-item">
+                    <span class="nav-link active" id="tabAddress" href="#divAddress" role="tab" aria-controls="divAddress" aria-selected="true">Address</span>
+                </li>
+                <li class="nav-item">
+                    <span class="nav-link" id="tabDelivery" href="#divDelivery" role="tab" aria-controls="divDelivery" aria-selected="false">Delivery</span>
+                </li>
+                <li class="nav-item">
+                    <span class="nav-link" id="tabReview" href="#divReview" role="tab" aria-controls="divReview" aria-selected="false">Review</span>
+                </li>
+                <li class="nav-item">
+                    <span class="nav-link" id="tabPayment" href="#divPayment" role="tab" aria-controls="divPayment" aria-selected="false">Payment</span>
+                </li>
+            </ul>
+            <div class="tab-content" id="tabContent">
+                <div class="tab-pane fade show active" id="divAddress" role="tabpanel" aria-labelledby="tabAddress">
+                    <h4>Shipping address</h4>
+                    <form id="formAddress">
+                        <div class="row">
+                            <div class="col-md-6">
+                                @Html.EditorFor(m => m.Model.ShipToAddress.FirstName)
+                            </div>
+                            <div class="col-md-6">
+                                @Html.EditorFor(m => m.Model.ShipToAddress.LastName)
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                @Html.EditorFor(m => m.Model.ShipToAddress.Street)
+                            </div>
+                            <div class="col-md-6">
+                                @Html.EditorFor(m => m.Model.ShipToAddress.City)
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                @Html.EditorFor(m => m.Model.ShipToAddress.State)
+                            </div>
+                            <div class="col-md-6">
+                                @Html.EditorFor(m => m.Model.ShipToAddress.Zipcode)
+                            </div>
+                        </div>
+                    </form>
+                    <div class="d-flex flex-column flex-md-row justify-content-between mt-3">
+                        <button class="btn btn-outline-primary" type="button">
+                            <i class="fa fa-angle-left"></i>
+                            Back to basket
+                        </button>
+                        <button class="btn btn-primary" type="button" onclick="gotoDelivery()">
+                            Go to delivery
+                            <i class="fa fa-angle-right"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="divDelivery" role="tabpanel" aria-labelledby="tabDelivery">
+                    <h4>Delivery</h4>
+                    <span id="deliveryWarning" class="text-danger field-validation-error" style="display:none">
+                        Please, select item below.
+                    </span>
+                    <div id="divDelivery" class="row pl-4">
+
+                        @foreach (var item in Model.DeliveryMethod)
+                        {
+                            <div class="form-group col-md-6">
+                                <input type="radio"
+                                       id="dm_@item.Id"
+                                       onclick="setShippingPrice(@item.Price)"
+                                       value="@item.Id"
+                                       data-val-name="@item.Name"
+                                       data-val-price="@item.Price"
+                                       name="deliveryRadio"
+                                       class="custom-control-input dm-item">
+                                <label for="dm_@item.Id" class="custom-control-label">
+                                    <strong>@item.Name - @item.Price</strong>
+                                    <br />
+                                    <span class="label-description">@item.Description</span>
+                                </label>
+                            </div>
+                        }
+                    </div>
+                    <div class="d-flex flex-column flex-md-row justify-content-between mt-3">
+                        <button class="btn btn-outline-primary" type="button" onclick="activateTab('tabAddress')">
+                            <i class="fa fa-angle-left"></i>
+                            Back to address
+                        </button>
+                        <button class="btn btn-primary" type="button" onclick="gotoReview()">
+                            Go to review
+                            <i class="fa fa-angle-right"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="divReview" role="tabpanel" aria-labelledby="tabReview">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="table-responsive">
+                                <table id="tableItems" class="table table-borderless">
+                                    <thead class="border-0 py-2">
+                                        <tr>
+                                            <th scope="col">
+                                                <div class="p-2 px-3 text-uppercase">Product</div>
+                                            </th>
+                                            <th scope="col">
+                                                <div class="py-2 text-uppercase">Price</div>
+                                            </th>
+                                            <th scope="col">
+                                                <div class="py-2 text-uppercase">Quantity</div>
+                                            </th>
+                                            <th scope="col">
+                                                <div class="py-2 text-uppercase">Total</div>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-column flex-md-row justify-content-between mt-3">
+                        <button onclick="activateTab('tabDelivery')" class="btn btn-outline-primary" type="button">
+                            <i class="fa fa-angle-left"></i>
+                            Back to delivery
+                        </button>
+                        <button class="btn btn-primary" type="button" onclick="activateTab('tabPayment')">
+                            Go to payment
+                            <i class="fa fa-angle-right"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="divPayment" role="tabpanel" aria-labelledby="tabPayment">
+                    <h2>This is a fake store online.</h2>
+                    <h4>
+                        I can create a payment method in this section, but I do not use it in a demo project.
+                        When you submit an order it just shows on <strong style="color:orange">Admin page > Order History.</strong>
+    <br /><br />
+    I am determined to use this project to show you my skill. Thank you.
+</h4>
+                    <div class="d-flex flex-column flex-md-row justify-content-between mt-3">
+                        <button onclick="activateTab('tabReview')" class="btn btn-outline-primary" type="button">
+                            <i class="fa fa-angle-left"></i>
+                            Back to review
+                        </button>
+                        <button onclick="submitOrder()" class="btn btn-primary" type="button">
+                            <i class="fa fa-cart-arrow-down"></i>
+                            Submit Order
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="bg-light px-4 text-uppercase font-weight-bold" style="padding: 1.20em;">
+                Order Summary
+            </div>
+            <div class="p-4">
+                <p class="font-italic mb-4">Shipping costs will be added depending on choices made during checkout</p>
+                <ul id="summaryTable" data-value="0" class="list-unstyled mb-4">
+                    <li class="d-flex justify-content-between py-3 border-bottom">
+                        <strong class="text-muted">Order subtotal</strong>
+                        <strong id="subtotal" data-value="0">0</strong>
+                    </li>
+                    <li class="d-flex justify-content-between py-3 border-bottom">
+                        <strong class="text-muted">Shipping and handling</strong>
+                        <strong id="shippingPrice">0</strong>
+                    </li>
+                    <li class="d-flex justify-content-between py-3 border-bottom">
+                        <strong class="text-muted">Total</strong>
+                        <strong id="grandtotal">0</strong>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{ 
+<script type="text/javascript">
+
+    function gotoDelivery() {
+        let valid = $('#formAddress').valid();
+        if (valid) {
+            activateTab('tabDelivery');
+        }
+    }
+
+    function gotoReview() {
+        let selected = $("#divDelivery .dm-item:checked");
+        if (selected && selected.length > 0) {
+            activateTab('tabReview');
+        } else {
+            $('#deliveryWarning').show();
+        }
+    }
+
+    function activateTab(tab) {
+        $('#' + tab).tab('show');
+    }
+
+    function setShippingPrice(price) {
+        $('#shippingPrice').text(store.ui.utils.formatCurrency(price));
+        let subtotal = $('#subtotal').data('value');
+        let grandtotal = subtotal + price;
+        $('#grandtotal').text(store.ui.utils.formatCurrency(grandtotal));
+
+        let $deliveryWarning = $('#deliveryWarning');
+        if ($deliveryWarning && $deliveryWarning.length) {
+            $deliveryWarning.remove();
+        }       
+    }
+
+    function initialTableItems(items) {
+        let $table = $('#tableItems');
+        let summaryTotal = 0;
+        for (let key in items) {
+            let item = items[key];
+            let $row = $('<tr></tr>')
+            let totalPrice = item.price * item.quantity;
+            $row.data('total-price', totalPrice);
+
+            summaryTotal += totalPrice;
+
+            let td =
+                '<td>' +
+                '	<div class="p-2">' +
+                '		<img src="' + item.url + '" alt="' + item.name + '"' +
+                '			class="img-fluid" style="max-height: 50px;">' +
+                '		<div class="ml-3 d-inline-block align-middle">' +
+                '			<h5 class="mb-0">' +
+                '				<a href="/shop/detail/' + item.id + '"' +
+                '					class="text-dark">' + item.name + '</a>' +
+                '			</h5>' +
+                '			<span class="text-muted font-weight-normal font-italic d-block">Type:' +
+                '				' + item.type + '</span>' +
+                '		</div>' +
+                '	</div>' +
+                '</td>'
+            $row.append(td);
+
+            let tdPrice = '<td class="align-middle text-right"><strong>' + store.ui.utils.formatCurrency(item.price) + '</strong></td>';
+            $row.append(tdPrice);
+
+            let tdQuantity =
+                '<td class="align-middle text-right">' +
+                '	<div class="d-flex align-items-center justify-content-center">' +
+                '		<span class="font-weight-bold item-qty-text">' + item.quantity + '</span>' +
+                '	</div>' +
+                '</td>'
+            $row.append(tdQuantity);
+
+            let tdTotal =
+                '<td class="align-middle text-right">' +
+                '	<strong class="item-total-text">' + store.ui.utils.formatCurrency(totalPrice) + '</strong>' +
+                '</td>'
+            $row.append(tdTotal);
+
+            $table.append($row);
+        }
+
+        let $subtotal = $('#subtotal');
+        let $grandtotal = $('#grandtotal');
+        $subtotal.text(store.ui.utils.formatCurrency(summaryTotal));
+        $subtotal.data('value', summaryTotal);
+        $grandtotal.text(store.ui.utils.formatCurrency(summaryTotal));
+    }
+
+    function getProducts() {
+        let items = store.ui.basket.get();
+        let ids = [];
+        for (let id in items) {
+            ids.push(id);
+        }
+
+        let serverItems = {};
+        $.getJSON('/shop/shop/getproducts', { ids: ids })
+            .done(function (data) {
+                $.each(data, function (idx, val) {
+                    serverItems[val.id] = val;
+                });
+            })
+            .then(function () {
+                for (let id in items) {
+                    items[id].name = serverItems[id].name;
+                    items[id].url = '/images/products/' + serverItems[id].pictureUrl;
+                    items[id].price = serverItems[id].price;
+                }
+                store.ui.basket.set(items);
+                initialTableItems(items);
+            });
+    }
+
+    function submitOrder() {
+        let data = store.ui.data.objectifyForm($("#formAddress").serializeArray());
+
+        let $delivery = $("#divDelivery input:checked");
+        data["Model.DeliveryMethodId"] = $delivery.val();
+        data["Model.DeliveryMethodName"] = $delivery.data("val-name");
+        data["Model.ShippingPrice"] = $delivery.data("val-price");
+
+        data["Model.OrderItems"] = [];
+        let items = store.ui.basket.get();
+        for (let key in items) {
+            let item = items[key];
+            data["Model.OrderItems"].push({
+                ProductId: item.id,
+                ProductName: item.name,
+                PictureUrl: item.url,
+                Price: item.price,
+                Quantity: item.quantity
+            });
+        }
+
+        $.post({
+            url: '@Url.Action("submitOrder", "shop", new { area = "shop" })',
+            data: data,
+            success: function (ret) {
+                store.ui.basket.remove();
+                window.location.replace('/shop/shop/index')
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        let count = store.ui.basket.count();
+        if (count == 0) {
+            window.location.replace('/shop/shop/index');
+        }
+        getProducts();
+    });
+</script>
+}

@@ -1,0 +1,5 @@
+﻿@model System.Object
+
+@Html.LabelFor(model => model)
+@Html.DropDownListFor(model => model, (IList<SelectListItem>)ViewData["SelectListItem"], new { @class = "form-control" })
+@Html.ValidationMessageFor(model => model, String.Empty, new { @class = "text-danger" })

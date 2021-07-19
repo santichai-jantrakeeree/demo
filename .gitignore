@@ -1,0 +1,12 @@
+bin
+obj
+.vs
+.vscode
+.DS_Store
+appsettings*.json
+*.db
+node_modules
+*.rdb
+*.suo
+*.dtbcache.v2
+*.user

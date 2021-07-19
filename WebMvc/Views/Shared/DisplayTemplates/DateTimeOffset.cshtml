@@ -1,0 +1,4 @@
+﻿@model System.DateTimeOffset
+
+@Html.LabelFor(model => model)
+@Html.TextBox(String.Empty, Model.ToString("MMMM dd yyyy, hh:mm:ss tt"), new { @class = "form-control", disabled = "disabled" })

@@ -1,0 +1,17 @@
+﻿@model WebMvc.Models.PageModel.ProductBrandPageDetailModel
+
+<form id="formDetails" onsubmit="return store.ui.data.save({formObject: this, formEvent: event});">
+    <div class="row">
+        @Html.HiddenFor(model => model.Model.Id)
+        <div class="form-group col-md-6">
+            @Html.EditorFor(model => model.Model.Name)
+        </div>
+    </div>
+</form>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        store.ui.popup.activateValidator('#formDetails', '#btnSave');
+    });
+</script>
+

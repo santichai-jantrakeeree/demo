@@ -1,0 +1,80 @@
+﻿@{ 
+    var menuName = ViewData["menuName"]?.ToString();
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+
+    <title>Online Store</title>
+
+    <link href="~/vendor/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/vendor/css/dataTables.bootstrap4.css" rel="stylesheet" />
+    <link href="~/vendor/css/font-awesome.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/app/css/site.css" />
+
+
+    @RenderSection("Head", required: false)
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar  -->
+        <nav id="sidebar">
+            <div class="sidebar-header" style="color: #fff">
+                <h4>@menuName</h4>
+            </div>
+
+            <ul class="list-unstyled components">
+                @*<li id="nvDashboard">
+                    <a href='@Url.Action("index", "dashboard", new { area = "admin"})'>Dashboard</a>
+                </li>*@
+                <li id="nvProduct">
+                    <a href="@Url.Action("index", "product", new { area = "admin"})">Product</a>
+                </li>
+                <li id="nvDeliveryMethod">
+                    <a href="@Url.Action("index", "deliverymethod", new { area = "admin"})">Delivery Method</a>
+                </li>
+                <li id="nvProductType">
+                    <a href="@Url.Action("index", "producttype", new { area = "admin"})">Product Type</a>
+                </li>
+                <li id="nvProductBrand">
+                    <a href="@Url.Action("index", "productbrand", new { area = "admin"})">Product Brand</a>
+                </li>
+                <li id="nvOrderHistory">
+                    <a href="@Url.Action("index", "order", new { area = "admin"})">Order History</a>
+                </li>
+            </ul>
+
+            <ul class="list-unstyled nav-button">
+                <li>
+                    <a href='@Url.Action("logout", "accounts", new { area = "accounts" })' class="btn btn-light">Logout</a>
+                </li>
+                <li>
+                    <a href='@Url.Action("index", "shop", new { area = "shop" })' class="btn btn-primary">Back to shop</a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Page Content  -->
+        <div id="content">
+            @RenderBody()
+        </div>
+    </div>
+
+    <script src="~/vendor/js/jquery.js"></script>
+    <script src="~/vendor/js/popper.js"></script>
+    <script src="~/vendor/js/bootstrap.js"></script>
+    <script src="~/vendor/js/jquery.dataTables.js"></script>
+    <script src="~/vendor/js/dataTables.bootstrap4.js"></script>
+
+    <script src="~/vendor/js/jquery.validate.js"></script>
+    <script src="~/vendor/js/jquery.validate.unobtrusive.js"></script>
+    <script src="~/app/js/ui.js"></script>
+    <script src="~/vendor/js/moment.min.js"></script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

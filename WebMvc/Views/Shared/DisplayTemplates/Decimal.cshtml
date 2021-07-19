@@ -1,0 +1,4 @@
+﻿@model System.Decimal
+
+@Html.LabelFor(model => model)
+@Html.TextBox(String.Empty, Model.ToString("N2"), new { @class = "form-control text-right", disabled = "disabled" })

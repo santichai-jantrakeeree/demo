@@ -1,0 +1,34 @@
+﻿@model WebMvc.Models.PageModel.ProductPageDetailModel
+
+<form id="formDetails" onsubmit="return store.ui.data.save({formObject: this, formEvent: event});" >
+    <div class="row">
+        @Html.HiddenFor(model => model.Model.Id)
+        <div class="col-md-6">
+            <div class="form-group">
+                @Html.EditorFor(model => model.Model.Name)
+            </div>
+            <div class="form-group">
+                @Html.EditorFor(model => model.Model.Price)
+            </div>
+            <div class="form-group">
+                @Html.EditorFor(model => model.Model.ProductTypeId, new { SelectListItem = Model.ProductTypeSelectList })
+            </div>
+            <div class="form-group">
+                @Html.EditorFor(model => model.Model.ProductBrandId, new { SelectListItem = Model.ProductBrandSelectList })
+            </div>
+            <div class="form-group">
+                @Html.EditorFor(model => model.Model.Description)
+            </div>
+        </div>
+        <div class="form-group col-md-6">
+            @Html.EditorFor(model => model.Model.PictureFile, new { pictureUrl = Model.Model.PictureUrl, name = Model.Model.Name })
+        </div>
+    </div>
+</form>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        store.ui.popup.activateValidator('#formDetails', '#btnSave');
+    });
+</script>
+

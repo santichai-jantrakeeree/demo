@@ -1,0 +1,126 @@
+﻿@model WebMvc.Models.PageModel.OrderPageDetailModel
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Serialization;
+
+@{
+    var items = JsonConvert.SerializeObject(
+            Model.Model.OrderItems,
+            new JsonSerializerSettings
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            });
+}
+<div class="row">
+    <div class="col-md-6 form-group">
+        @Html.DisplayFor(m => m.Model.OrderDate)
+    </div>
+    <div class="col-md-6 form-group">
+        @Html.DisplayFor(m => m.Model.BuyerEmail)
+    </div>
+    <div class="col-md-6 form-group">
+        @Html.DisplayFor(m => m.Model.ShipToAddress.FirstName)
+    </div>
+    <div class="col-md-6 form-group">
+        @Html.DisplayFor(m => m.Model.ShipToAddress.LastName)
+    </div>
+    <div class="col-md-6 form-group">
+        @Html.DisplayFor(m => m.Model.ShipToAddress.Street)
+    </div>
+    <div class="col-md-6 form-group">
+        @Html.DisplayFor(m => m.Model.ShipToAddress.City)
+    </div>
+    <div class="col-md-6 form-group">
+        @Html.DisplayFor(m => m.Model.ShipToAddress.State)
+    </div>
+    <div class="col-md-6 form-group">
+        @Html.DisplayFor(m => m.Model.ShipToAddress.Zipcode)
+    </div>
+    <div class="col-md-6 form-group">
+        @Html.DisplayFor(m => m.Model.DeliveryMethodName)
+    </div>
+    <div class="col-md-6 form-group">
+        @Html.DisplayFor(m => m.Model.ShippingPrice)
+    </div>
+    <div class="col-md-6 form-group">
+        @Html.DisplayFor(m => m.Model.SubTotal)
+    </div>
+    <div class="col-md-6 form-group">
+        @Html.DisplayFor(m => m.Model.Total)
+    </div>
+</div>
+
+<fieldset legend="Order Items">
+    <div class="table-responsive">
+        <table id="tableItems" class="table table-borderless table-order">
+            <thead class="border-0 py-2">
+                <tr>
+                    <th scope="col">
+                        <div class="p-2 px-3 text-uppercase">Product</div>
+                    </th>
+                    <th scope="col">
+                        <div class="py-2 text-uppercase">Price</div>
+                    </th>
+                    <th scope="col">
+                        <div class="py-2 text-uppercase">Quantity</div>
+                    </th>
+                    <th scope="col">
+                        <div class="py-2 text-uppercase">Total</div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</fieldset>
+
+<script type="text/javascript">
+    function initialTableItems(items) {
+        let $table = $('#tableItems');
+        for (let key in items) {
+            let item = items[key];
+            let $row = $('<tr></tr>')
+            let totalPrice = item.price * item.quantity;
+
+            let td =
+                '<td>' +
+                '	<div class="p-2">' +
+                '		<img src="' + item.pictureUrl + '" alt="' + item.productName + '"' +
+                '			class="img-fluid" style="max-height: 50px;">' +
+                '		<div class="ml-3 d-inline-block align-middle">' +
+                '			<h5 class="mb-0">' +
+                '				<a href="/shop/shop/detail/' + item.id + '"' +
+                '					class="text-dark">' + item.productName + '</a>' +
+                '			</h5>' +
+                '		</div>' +
+                '	</div>' +
+                '</td>'
+            $row.append(td);
+
+            let tdPrice = '<td class="align-middle text-right"><strong>' + store.ui.utils.formatCurrency(item.price) + '</strong></td>';
+            $row.append(tdPrice);
+
+            let tdQuantity =
+                '<td class="align-middle text-right">' +
+                '	<div class="d-flex align-items-center justify-content-center">' +
+                '		<span class="font-weight-bold item-qty-text" style="font-size: 1.5em;">' + item.quantity + '</span>' +
+                '	</div>' +
+                '</td>'
+            $row.append(tdQuantity);
+
+            let tdTotal =
+                '<td class="align-middle text-right">' +
+                '	<strong class="item-total-text">' + store.ui.utils.formatCurrency(totalPrice) + '</strong>' +
+                '</td>'
+            $row.append(tdTotal);
+
+            $table.append($row);
+            debugger;
+        }
+    }
+
+    $(document).ready(function () {
+        let items = @Html.Raw(items);
+        initialTableItems(items);
+    });
+</script>

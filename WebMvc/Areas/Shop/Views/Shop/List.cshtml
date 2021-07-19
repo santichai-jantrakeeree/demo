@@ -1,0 +1,53 @@
+﻿@model WebMvc.Areas.Shop.Models.ProductListPageModel
+@using Newtonsoft.Json;
+
+<div class="row">
+    @foreach (var product in Model.Data)
+    {
+        <div class="col-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="image position-relative" style="cursor: pointer;">
+                    <a href='/shop/shop/detail/@product.Id'>
+                        <img src="@Url.Content(product.PictureUrl)" alt="@product.Name" class="img-fluid bg-info">
+                    </a>
+                    <div class="d-flex align-items-center justify-content-center hover-overlay mt-3">
+                        @{ 
+                            var item = new
+                            {
+                                id = product.Id,
+                                name = product.Name,
+                                price = product.Price,
+                                type = product.ProductType,
+                                url = string.IsNullOrEmpty(product.PictureUrl)
+                                    ? string.Empty :
+                                    product.PictureUrl.Substring(1, product.PictureUrl.Length - 1),
+                                quantity = 1
+                            };
+                        }
+                        <button onclick='store.ui.basket.addItem(@Html.Raw(JsonConvert.SerializeObject(item)))'
+                                type="button" class="btn btn-primary fa fa-shopping-cart mr-2"></button>
+                        <a href='/shop/shop/detail/@product.Id' role="button" aria-pressed="true" class="btn btn-primary" style="font-weight:bold;font-size:.7rem">View</a>
+                    </div>
+                </div>
+
+                <div class="card-body d-flex flex-column">
+                    <a href='/shop/shop/detail/@product.Id'>
+                        <h6 class="text-uppercase">@product.Name</h6>
+                    </a>
+                    <span class="mb-2">@product.Price.ToString("C")</span>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        setResultText({
+            pageIndex: @Model.PageIndex,
+            pageSize: @Model.PageSize,
+            count: @Model.Count
+        });
+    });
+
+</script>

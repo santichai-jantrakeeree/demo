@@ -1,0 +1,26 @@
+﻿@model WebMvc.Models.PageModel.DeliveryMethodPageDetailModel
+
+<form id="formDetails" onsubmit="return store.ui.data.save({formObject: this, formEvent: event});">
+    <div class="row">
+        @Html.HiddenFor(model => model.Model.Id)
+        <div class="form-group col-md-6">
+            @Html.EditorFor(model => model.Model.Name)
+        </div>
+        <div class="form-group col-md-6">
+            @Html.EditorFor(model => model.Model.DeliveryTime)
+        </div>
+        <div class="form-group col-md-6">
+            @Html.EditorFor(model => model.Model.Price)
+        </div>
+        <div class="form-group col-md-6">
+            @Html.EditorFor(model => model.Model.Description)
+        </div>
+    </div>
+</form>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        store.ui.popup.activateValidator('#formDetails', '#btnSave');
+    });
+</script>
+
